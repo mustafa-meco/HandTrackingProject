@@ -41,7 +41,7 @@ indexn = 8
 while True:
 
     success, img = cap.read()
-
+    img = cv2.flip(img, flipCode=1)
     img = detector.findHands(img,draw = False)
     lmList = detector.findPosition(img, draw= False)
 
@@ -80,6 +80,7 @@ while True:
 
 
     cv2.putText(img, "Points: " +str(points), (100, 70), cv2.FONT_HERSHEY_PLAIN, 3, (255, 0, 255), 3)
+
 
     cv2.imshow("Image", img)
     cv2.waitKey(1)
