@@ -32,7 +32,7 @@ while True:
     img = cv2.flip(img,flipCode=1)
     img = detector.findHands(img, draw=False)
     lmList = detector.findPosition(img, draw = False)
-    if len(lmList) != 0:
+    if len(lmList) != 0 and lmList[12][2] > lmList[10][2]:
         #print(lmList[4], lmList[8])
         x1, y1 = lmList[4][1], lmList[4][2]
         x2, y2 = lmList[8][1], lmList[8][2]
