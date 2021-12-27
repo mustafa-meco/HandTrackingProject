@@ -27,7 +27,7 @@ cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
 
-detector = htm.handDetector(detectionCon=0.85)
+detector = htm.handDetector(detectionCon=0.75)
 xp, yp = 0, 0
 imgCanvas = np.zeros((720, 1280, 3), np.uint8)
 

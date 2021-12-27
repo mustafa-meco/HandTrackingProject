@@ -1,6 +1,7 @@
 import cv2
 import mediapipe as mp
 import time
+import math
 
 
 
@@ -29,6 +30,10 @@ class handDetector():
 
     def findPosition(self, img, handNo = 0, draw = True):
 
+        xList = []
+        yList = []
+        bbox = []
+
         self.lmList = []
 
         if self.results.multi_hand_landmarks:
@@ -37,12 +42,18 @@ class handDetector():
                 #print(id,lm)
                 h, w, c = img.shape
                 cx, cy = int(lm.x*w), int(lm.y*h)
+                xList.append(cx)
+                yList.append(cy)
                 #print(id, cx, cy)
                 self.lmList.append([id,cx,cy])
                 if draw:
                     cv2.circle(img, (cx,cy), 7, (255,0,0),cv2.FILLED)
 
-        return self.lmList
+            xmin, xmax = min(xList), max(xList)
+            ymin, ymax = min(yList), max(yList)
+            bbox = xmin, ymin, xmax, ymax
+
+        return self.lmList, bbox
     def fingersUp(self):
         fingers = []
         # thumb
@@ -63,6 +74,22 @@ class handDetector():
             else:
                 fingers.append(0)
         return fingers
+
+    def findDistance(self, p1, pw, img, draw=True, r=15, t=3):
+        x1, y1 = self.lmList[p1][1], self.lmList[p1][2]
+        x2, y2 = self.lmList[pw][1], self.lmList[pw][2]
+        cx, cy = (x1 + x2) // 2, (y1 + y2) // 2
+
+        color = (189, 100, 55)
+
+        if draw:
+            cv2.circle(img, (x1, y1), 15, color, cv2.FILLED)
+            cv2.circle(img, (x2, y2), 15, color, cv2.FILLED)
+            cv2.line(img, (x1, y1), (x2, y2), color, 3)
+            cv2.circle(img, (cx, cy), 15, color, cv2.FILLED)
+        length = math.hypot(x2 - x1, y2 - y1)
+
+        return length, img, [x1, y1, x2, y2, cx, cy]
 
 def main():
     pTime = 0
